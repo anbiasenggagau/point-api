@@ -1,15 +1,15 @@
 require('dotenv').config()
 
-const express = require('express')
-const mongoose = require('mongoose')
-const cors = require('cors')
-const { Users, AuthUsers } = require('./model/users')
-const { Customers } = require('./model/groups')
-const { Roles } = require('./model/roles')
-const { Branch } = require('./model/branch')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const { v4: uuidv4 } = require('uuid')
+const express=require('express')
+const mongoose=require('mongoose')
+const cors=require('cors')
+const { Users, AuthUsers }=require('./model/users')
+const { Customers }=require('./model/groups')
+const { Roles }=require('./model/roles')
+const { Branch }=require('./model/branch')
+const bcrypt=require('bcrypt')
+const jwt=require('jsonwebtoken')
+const { v4: uuidv4 }=require('uuid')
 
 // Connect to Local MongoDBCompas
 mongoose.connect('mongodb://localhost:27017/PointAPI', {
@@ -22,18 +22,18 @@ mongoose.connect('mongodb://localhost:27017/PointAPI', {
 // Initialize Dummy Datas For The Database
 mongoose.connection.once('open', async () => {
 
-    if (await Users.estimatedDocumentCount() == 2) {
+    if (await Users.estimatedDocumentCount()==0) {
 
         // Create New User
-        let tokenID = uuidv4()
+        let tokenID=uuidv4()
 
-        let authUser = {
+        let authUser={
             username: 'senggagau',
             password: bcrypt.hashSync('asdasd', 10),
             token_id: tokenID
         }
 
-        let user = {
+        let user={
             name: 'Anbia Senggagau',
             first_name: 'Anbia',
             last_name: 'Senggagau',
@@ -44,23 +44,69 @@ mongoose.connection.once('open', async () => {
             token_id: tokenID
         }
 
-        let wait = await AuthUsers.insertMany(authUser)
-        wait = await Users.insertMany(user)
+        wait=await AuthUsers.insertMany(authUser)
+        wait=await Users.insertMany(user)
+
+        // Create New User
+        tokenID=uuidv4()
+
+        authUser={
+            username: 'anbiasenggagau',
+            password: bcrypt.hashSync('asdasd', 10),
+            token_id: tokenID
+        }
+
+        user={
+            name: 'Anbia Senggagau',
+            first_name: 'Anbia',
+            last_name: 'Senggagau',
+            email: 'muhammadesenggagau@gmail.com',
+            email_confirmation_code: uuidv4(),
+            created_at: new Date(),
+            updated_at: new Date(),
+            token_id: tokenID
+        }
+
+        wait=await AuthUsers.insertMany(authUser)
+        wait=await Users.insertMany(user)
+
+        // Create New User
+        tokenID=uuidv4()
+
+        authUser={
+            username: 'senggagauanbia',
+            password: bcrypt.hashSync('asdasd', 10),
+            token_id: tokenID
+        }
+
+        user={
+            name: 'Anbia Senggagau',
+            first_name: 'Anbia',
+            last_name: 'Senggagau',
+            email: 'muhammadesenggagau@gmail.com',
+            email_confirmation_code: uuidv4(),
+            created_at: new Date(),
+            updated_at: new Date(),
+            token_id: tokenID
+        }
+
+        wait=await AuthUsers.insertMany(authUser)
+        wait=await Users.insertMany(user)
         console.log('Added a user')
     }
 
-    if (await Roles.estimatedDocumentCount() == 0) {
+    if (await Roles.estimatedDocumentCount()==0) {
 
-        let tokenID1 = await AuthUsers.findOne({ username: 'anbiasenggagau' })
-        let tokenID2 = await AuthUsers.findOne({ username: 'senggagauanbia' })
-        let tokenID3 = await AuthUsers.findOne({ username: 'senggagau' })
+        let tokenID1=await AuthUsers.findOne({ username: 'anbiasenggagau' })
+        let tokenID2=await AuthUsers.findOne({ username: 'senggagauanbia' })
+        let tokenID3=await AuthUsers.findOne({ username: 'senggagau' })
 
-        tokenID1 = tokenID1.token_id
-        tokenID2 = tokenID2.token_id
-        tokenID3 = tokenID3.token_id
+        tokenID1=tokenID1.token_id
+        tokenID2=tokenID2.token_id
+        tokenID3=tokenID3.token_id
 
 
-        const dummyData = [
+        const dummyData=[
             {
                 name: 'Admin',
                 member: [tokenID1],
@@ -117,18 +163,18 @@ mongoose.connection.once('open', async () => {
 
         ]
 
-        let wait = await Roles.insertMany(dummyData)
+        let wait=await Roles.insertMany(dummyData)
         console.log('Added Roles')
     }
 
-    if (await Branch.estimatedDocumentCount() == 0) {
-        let tokenID1 = await AuthUsers.findOne({ username: 'anbiasenggagau' })
-        let tokenID2 = await AuthUsers.findOne({ username: 'senggagauanbia' })
+    if (await Branch.estimatedDocumentCount()==0) {
+        let tokenID1=await AuthUsers.findOne({ username: 'anbiasenggagau' })
+        let tokenID2=await AuthUsers.findOne({ username: 'senggagauanbia' })
 
-        tokenID1 = tokenID1.token_id
-        tokenID2 = tokenID2.token_id
+        tokenID1=tokenID1.token_id
+        tokenID2=tokenID2.token_id
 
-        let dummyData = [
+        let dummyData=[
             {
                 name: 'Jakarta',
                 member: [tokenID1, tokenID2]
@@ -151,21 +197,21 @@ mongoose.connection.once('open', async () => {
             }
         ]
 
-        let wait = await Branch.insertMany(dummyData)
+        let wait=await Branch.insertMany(dummyData)
         console.log('Added Branch')
     }
 
-    if (await Customers.estimatedDocumentCount() == 0) {
+    if (await Customers.estimatedDocumentCount()==0) {
         // Create New Customers Data
-        const data = require('./dummy data/customers')
+        const data=require('./dummy data/customers')
 
-        let wait = await Customers.insertMany(data)
+        let wait=await Customers.insertMany(data)
         console.log('Added dummy datas')
     }
 
 })
 
-const app = express()
+const app=express()
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
@@ -177,12 +223,12 @@ app.use('/master', require('./routes/customers'))
 // Authentication
 app.post('/auth/login', async (req, res) => {
 
-    let username = req.body.username
-    let password = req.body.password
+    let username=req.body.username
+    let password=req.body.password
 
-    let user = await AuthUsers.findOne({ username: username })
+    let user=await AuthUsers.findOne({ username: username })
 
-    if (user == null) return res.status(404).json({ error: { message: 'Cannot find the user' } })
+    if (user==null) return res.status(404).json({ error: { message: 'Cannot find the user' } })
 
     if (!bcrypt.compareSync(password, user.password)) return res.status(401).json({
         error: {
@@ -190,30 +236,30 @@ app.post('/auth/login', async (req, res) => {
         }
     })
 
-    let tokenID = user.token_id
-    user = await Users.findOne({ token_id: tokenID })
+    let tokenID=user.token_id
+    user=await Users.findOne({ token_id: tokenID })
 
-    user = user.toObject()
+    user=user.toObject()
     delete user.__v
-    user.id = user._id
+    user.id=user._id
     delete user._id
 
-    let accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' })
+    let accessToken=jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' })
 
-    user.access_token = accessToken
-    user.token_type = 'Bearer'
+    user.access_token=accessToken
+    user.token_type='Bearer'
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
-        user.token_expires_in = data.exp
+        user.token_expires_in=data.exp
     })
 
     res.status(200).json({ data: user })
 })
 
 
-const port = process.env.PORT || 3000
+const port=process.env.PORT||3000
 app.listen(port, () => {
     console.log(`Listening to port ${port}`)
 })
 
-module.exports = { app }
+module.exports={ app }
